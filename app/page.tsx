@@ -52,7 +52,7 @@ export default function KidsGame() {
     }
   }, [score, player]);
 
-  const handleAnswer = (opt) => {
+  const handleAnswer = (opt: any) => {
     if (msg) return;
     const correct = opt === content[player].questions[currentIdx].a;
     
