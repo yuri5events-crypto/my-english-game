@@ -66,7 +66,7 @@ export default function KidsGame() {
 
     setTimeout(() => {
       setMsg("");
-      setCurrentIdx(prev => (prev + 1) % content[player].questions.length);
+      setCurrentIdx(prev => (prev + 1) % (content as any)[player!].questions.length);
     }, 1200);
   };
 
