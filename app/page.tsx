@@ -72,13 +72,13 @@ export default function KidsGame() {
 
   // פונקציית איפוס
   const resetScore = () => {
-    const confirmReset = window.confirm(`האם לאפס את הניקוד של ${content[player].name}?`);
+    const confirmReset = window.confirm(`הניקוד של ${player!} יאופס. האם אתה בטוח?`);
+    
     if (confirmReset) {
       setScore(0);
-      localStorage.setItem(`score_${player}`, "0");
+      localStorage.setItem(`score_${player!}`, "0");
     }
   };
-
   if (!player) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-6 font-sans">
