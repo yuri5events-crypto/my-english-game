@@ -54,7 +54,7 @@ export default function KidsGame() {
 
   const handleAnswer = (opt: any) => {
     if (msg) return;
-    const correct = opt === content[player].questions[currentIdx].a;
+   const correct = player && opt === (content as any)[player].questions[currentIdx].a;
     
     if (correct) {
       setScore(s => s + 20);
