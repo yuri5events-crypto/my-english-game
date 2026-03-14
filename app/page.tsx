@@ -1,82 +1,156 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+// נתונים מותאמים אישית
 const content: any = {
   ilai: {
     name: "אילעי",
-    english: {
-      lesson: { title: "לימוד אותיות", text: "באנגלית לכל אות גדולה יש אות קטנה. הן נשמעות אותו דבר!", example: "B = b | A = a" },
-      questions: [
-        { q: "איזו אות קטנה מתאימה ל-B?", options: ["d", "b", "p"], a: "b" },
-        { q: "מה האות הראשונה ב-Apple?", options: ["B", "A", "C"], a: "A" },
-        { q: "איזו אות קטנה מתאימה ל-G?", options: ["q", "g", "p"], a: "g" },
-        { q: "איך כותבים CAT בקטנות?", options: ["bat", "cat", "hat"], a: "cat" },
-        { q: "השלם את האות: D_G (כלב)", options: ["O", "A", "I"], a: "O" }
-      ]
-    },
     math: {
-      lesson: { title: "מה זה חילוק?", text: "חילוק זה לחלק משהו לקבוצות שוות. 10 סוכריות ל-2 חברים זה 5 לכל אחד.", example: "10 ÷ 2 = 5" },
-      questions: [
-        { q: "כמה זה 20 חלקי 2?", options: ["5", "10", "15"], a: "10" },
-        { q: "כמה זה 12 כפול 3?", options: ["36", "30", "40"], a: "36" },
-        { q: "כמה זה 100 פחות 25?", options: ["75", "80", "70"], a: "75" },
-        { q: "כמה זה 15 חלקי 3?", options: ["3", "5", "6"], a: "5" },
-        { q: "כמה זה 5 כפול 8?", options: ["35", "40", "45"], a: "40" }
+      lvl1: [
+        { q: "12 × 4 = ?", options: ["44", "48", "52"], a: "48" },
+        { q: "100 ÷ 5 = ?", options: ["20", "25", "15"], a: "20" },
+        { q: "150 - 75 = ?", options: ["75", "85", "65"], a: "75" },
+        { q: "9 × 9 = ?", options: ["71", "81", "91"], a: "81" },
+        { q: "120 + 80 = ?", options: ["180", "200", "220"], a: "200" },
+        { q: "45 ÷ 3 = ?", options: ["15", "12", "18"], a: "15" },
+        { q: "7 × 8 = ?", options: ["54", "56", "58"], a: "56" },
+        { q: "250 ÷ 2 = ?", options: ["120", "125", "130"], a: "125" },
+        { q: "33 + 67 = ?", options: ["90", "100", "110"], a: "100" },
+        { q: "11 × 5 = ?", options: ["55", "65", "45"], a: "55" },
+        { q: "64 ÷ 8 = ?", options: ["7", "8", "9"], a: "8" },
+        { q: "14 + 14 + 14 = ?", options: ["38", "42", "44"], a: "42" },
+        { q: "500 - 150 = ?", options: ["350", "400", "450"], a: "350" },
+        { q: "6 × 12 = ?", options: ["62", "72", "82"], a: "72" },
+        { q: "81 ÷ 9 = ?", options: ["8", "9", "10"], a: "9" },
+        { q: "0.5 + 0.5 = ?", options: ["1", "0.10", "2"], a: "1" },
+        { q: "1000 ÷ 4 = ?", options: ["200", "250", "300"], a: "250" },
+        { q: "13 × 2 = ?", options: ["24", "26", "28"], a: "26" },
+        { q: "90 ÷ 2 = ?", options: ["40", "45", "50"], a: "45" },
+        { q: "77 - 18 = ?", options: ["59", "69", "49"], a: "59" }
+      ],
+      lvl2: [ /* שאלות קשות יותר לאילעי... */ ]
+    },
+    english: {
+      lvl1: [
+        { q: "איך כותבים 'צהוב'?", options: ["Yellow", "Green", "Blue"], a: "Yellow" },
+        { q: "מה הפירוש של Friend?", options: ["משפחה", "חבר", "אויב"], a: "חבר" },
+        { q: "האות הקטנה של G היא:", options: ["q", "g", "j"], a: "g" },
+        { q: "איך אומרים 'מטבח'?", options: ["Kitchen", "Bedroom", "Garden"], a: "Kitchen" },
+        { q: "השלם: I ___ a student", options: ["am", "is", "are"], a: "am" },
+        { q: "מה הפירוש של Write?", options: ["לקרוא", "לכתוב", "לשיר"], a: "לכתוב" },
+        { q: "איך אומרים 'שלוש עשרה'?", options: ["Thirty", "Thirteen", "Three"], a: "Thirteen" },
+        { q: "הפועל Eat פירושו:", options: ["לשתות", "לאכול", "לישון"], a: "לאכול" },
+        { q: "מה זה Beautiful?", options: ["מכוער", "יפה", "חכם"], a: "יפה" },
+        { q: "איך כותבים 'ספר'?", options: ["Book", "Pen", "Bag"], a: "Book" },
+        { q: "השלם: Sun_ay (יום ראשון)", options: ["d", "m", "b"], a: "d" },
+        { q: "איך אומרים 'עץ'?", options: ["Tree", "Three", "True"], a: "Tree" },
+        { q: "מה זה Breakfast?", options: ["צהריים", "ערב", "בוקר"], a: "בוקר" },
+        { q: "איך אומרים 'מחר'?", options: ["Today", "Yesterday", "Tomorrow"], a: "Tomorrow" },
+        { q: "האות הגדולה של f היא:", options: ["F", "E", "P"], a: "F" },
+        { q: "איך אומרים 'נעליים'?", options: ["Shirt", "Shoes", "Pants"], a: "Shoes" },
+        { q: "מה הפירוש של Always?", options: ["אף פעם", "תמיד", "לפעמים"], a: "תמיד" },
+        { q: "השלם: A, B, C, _", options: ["D", "E", "F"], a: "D" },
+        { q: "איך אומרים 'חודש'?", options: ["Week", "Month", "Year"], a: "Month" },
+        { q: "מה זה Table?", options: ["כיסא", "שולחן", "מיטה"], a: "שולחן" }
       ]
     },
     general: {
-      lesson: { title: "האחוזון העליון", text: "שאלות על העולם, המדע והטבע שיבדקו כמה אתם חכמים!", example: "7 יבשות | 360 מעלות" },
-      questions: [
-        { q: "איזו מדינה בעולם נראית כמו צורה של מגף?", options: ["צרפת", "איטליה", "יוון"], a: "איטליה" },
-        { q: "מהו האיבר הגדול ביותר בגוף האדם?", options: ["הלב", "העור", "הכבד"], a: "העור" },
-        { q: "כמה שחקני כדורגל מכל קבוצה נמצאים על המגרש?", options: ["10", "11", "12"], a: "11" },
-        { q: "איזה כוכב לכת הוא הכי קרוב לשמש?", options: ["חמה", "מאדים", "נוגה"], a: "חמה" },
-        { q: "מהו בעל החיים הגדול ביותר שחי אי פעם?", options: ["פיל", "לווייתן כחול", "דינוזאור"], a: "לווייתן כחול" },
-        { q: "באיזו יבשת נמצאת מדינת ישראל?", options: ["אירופה", "אסיה", "אפריקה"], a: "אסיה" },
-        { q: "איזה צבע מתקבל כשמערבבים כחול וצהוב?", options: ["ירוק", "סגול", "כתום"], a: "ירוק" },
+      lvl1: [
+        { q: "מתי יום ההולדת של אילעי דון?", options: ["17 לדצמבר", "25 לספטמבר", "1 בינואר"], a: "25 לספטמבר" },
+        { q: "איזו מדינה נראית כמו מגף?", options: ["איטליה", "יוון", "צרפת"], a: "איטליה" },
+        { q: "מהו האיבר הגדול ביותר בגוף האדם?", options: ["העור", "הלב", "הכבד"], a: "העור" },
+        { q: "כמה יבשות יש בעולם?", options: ["5", "6", "7"], a: "7" },
+        { q: "באיזו יבשת נמצאת ישראל?", options: ["אירופה", "אסיה", "אפריקה"], a: "אסיה" },
+        { q: "איזה כוכב לכת הכי קרוב לשמש?", options: ["חמה", "מאדים", "נוגה"], a: "חמה" },
+        { q: "כמה שחקנים יש בקבוצת כדורגל על המגרש?", options: ["10", "11", "12"], a: "11" },
+        { q: "מה שוקל יותר: קילו נוצות או קילו ברזל?", options: ["ברזל", "נוצות", "אותו דבר"], a: "אותו דבר" },
+        { q: "איזה צבע מתקבל מערבוב כחול וצהוב?", options: ["סגול", "ירוק", "כתום"], a: "ירוק" },
         { q: "כמה מעלות יש במעגל שלם?", options: ["180", "240", "360"], a: "360" },
-        { q: "האם עגבנייה היא פרי או ירק?", options: ["פרי", "ירק", "ממתק"], a: "פרי" },
-        { q: "מה שוקל יותר: קילו נוצות או קילו ברזל?", options: ["ברזל", "נוצות", "שניהם אותו דבר"], a: "שניהם אותו דבר" },
-        { q: "מתי יום ההולדת של אחותך אלין?", options: ["17 לדצמבר", "25 לספטמבר", "10 ליוני"], a: "17 לדצמבר" },
-        { q: "מתי יום ההולדת שלך, אילעי?", options: ["17 לדצמבר", "25 לספטמבר", "1 באוגוסט"], a: "25 לספטמבר" }
+        { q: "מהי החיה הגדולה ביותר בעולם?", options: ["פיל", "לווייתן כחול", "כריש"], a: "לווייתן כחול" },
+        { q: "מי המציא את נורת החשמל?", options: ["אדיסון", "איינשטיין", "ניוטון"], a: "אדיסון" },
+        { q: "מהי בירת צרפת?", options: ["רומא", "לונדון", "פריז"], a: "פריז" },
+        { q: "באיזה צד נמצא הלב?", options: ["ימין", "שמאל", "מרכז"], a: "שמאל" },
+        { q: "כמה חודשים יש בשנה?", options: ["10", "12", "14"], a: "12" },
+        { q: "מהי היבשת הקרה ביותר?", options: ["אסיה", "אנטארקטיקה", "אירופה"], a: "אנטארקטיקה" },
+        { q: "מי כתב את 'התקווה'?", options: ["הרצל", "נפתלי הרץ אימבר", "ביאליק"], a: "נפתלי הרץ אימבר" },
+        { q: "מהו ההר הגבוה בעולם?", options: ["חרמון", "אוורסט", "הימלאיה"], a: "אוורסט" },
+        { q: "איזה פרי נחשב לסמל של ראש השנה?", options: ["תפוח", "רימון", "תמר"], a: "רימון" },
+        { q: "כמה כוכבים יש בדגל ישראל?", options: ["1", "2", "0"], a: "1" }
       ]
     }
   },
   alin: {
     name: "אלין",
-    english: {
-      lesson: { title: "הכרת האותיות", text: "האות A נשמעת כמו 'איי'. האות הקטנה שלה היא a.", example: "Apple = A" },
-      questions: [
-        { q: "איזו אות זו: A?", options: ["איי", "בִּי", "סִי"], a: "איי" },
-        { q: "איזו אות קטנה מתאימה ל-A?", options: ["b", "a", "c"], a: "a" },
-        { q: "מה האות הראשונה של Dad?", options: ["B", "D", "A"], a: "D" },
-        { q: "איזו מילה מתחילה ב-B?", options: ["Ball", "Apple", "Cat"], a: "Ball" },
-        { q: "איזו אות קטנה מתאימה ל-M?", options: ["n", "m", "w"], a: "m" }
+    math: {
+      lvl1: [
+        { q: "5 + 5 = ?", options: ["8", "10", "12"], a: "10" },
+        { q: "10 - 3 = ?", options: ["6", "7", "8"], a: "7" },
+        { q: "4 ÷ 2 = ?", options: ["1", "2", "3"], a: "2" },
+        { q: "6 + 6 = ?", options: ["11", "12", "13"], a: "12" },
+        { q: "8 ÷ 2 = ?", options: ["3", "4", "5"], a: "4" },
+        { q: "12 + 3 = ?", options: ["14", "15", "16"], a: "15" },
+        { q: "9 - 4 = ?", options: ["5", "6", "4"], a: "5" },
+        { q: "2 + 2 + 2 = ?", options: ["4", "6", "8"], a: "6" },
+        { q: "10 ÷ 2 = ?", options: ["4", "5", "6"], a: "5" },
+        { q: "20 - 10 = ?", options: ["5", "10", "15"], a: "10" },
+        { q: "3 + 7 = ?", options: ["9", "10", "11"], a: "10" },
+        { q: "14 - 4 = ?", options: ["10", "12", "8"], a: "10" },
+        { q: "5 ÷ 5 = ?", options: ["0", "1", "5"], a: "1" },
+        { q: "2 × 3 = ?", options: ["5", "6", "7"], a: "6" },
+        { q: "15 + 5 = ?", options: ["10", "20", "25"], a: "20" },
+        { q: "18 - 8 = ?", options: ["8", "10", "12"], a: "10" },
+        { q: "4 + 4 = ?", options: ["7", "8", "9"], a: "8" },
+        { q: "12 ÷ 2 = ?", options: ["5", "6", "7"], a: "6" },
+        { q: "7 + 2 = ?", options: ["8", "9", "10"], a: "9" },
+        { q: "20 ÷ 2 = ?", options: ["5", "10", "15"], a: "10" }
       ]
     },
-    math: {
-      lesson: { title: "מה זה חילוק?", text: "6 סוכריות ל-2 חברים = 3 לכל אחד.", example: "6 ÷ 2 = 3" },
-      questions: [
-        { q: "כמה זה 6 חלקי 2?", options: ["2", "3", "4"], a: "3" },
-        { q: "כמה זה 10 חלקי 2?", options: ["5", "4", "6"], a: "5" },
-        { q: "כמה זה 5 + 5?", options: ["8", "10", "12"], a: "10" },
-        { q: "כמה זה 4 חלקי 2?", options: ["1", "2", "3"], a: "2" },
-        { q: "כמה זה 8 פחות 3?", options: ["4", "5", "6"], a: "5" }
+    english: {
+      lvl1: [
+        { q: "איזו אות זו: A?", options: ["איי", "בִּי", "סִי"], a: "איי" },
+        { q: "מה זה Apple?", options: ["תפוח", "בננה", "תפוז"], a: "תפוח" },
+        { q: "האות הקטנה של B היא:", options: ["d", "b", "p"], a: "b" },
+        { q: "איך אומרים 'שלום'?", options: ["Hello", "Bye", "Thanks"], a: "Hello" },
+        { q: "מה זה Dog?", options: ["חתול", "כלב", "דג"], a: "כלב" },
+        { q: "איזו אות קטנה מתאימה ל-M?", options: ["n", "m", "w"], a: "m" },
+        { q: "מה הצבע Red?", options: ["כחול", "אדום", "צהוב"], a: "אדום" },
+        { q: "איך אומרים 'אמא'?", options: ["Mom", "Dad", "Sister"], a: "Mom" },
+        { q: "מה זה Cat?", options: ["כלב", "חתול", "ציפור"], a: "חתול" },
+        { q: "האות הקטנה של T היא:", options: ["t", "f", "l"], a: "t" },
+        { q: "איך אומרים 'תודה'?", options: ["Please", "Thanks", "Sorry"], a: "Thanks" },
+        { q: "מה זה Blue?", options: ["ירוק", "כחול", "לבן"], a: "כחול" },
+        { q: "איך אומרים 'ספר'?", options: ["Pen", "Book", "Bag"], a: "Book" },
+        { q: "האות הגדולה של e היא:", options: ["E", "A", "O"], a: "E" },
+        { q: "איך אומרים 'אחת, שתיים, שלוש'?", options: ["A,B,C", "One,Two,Three", "Red,Blue"], a: "One,Two,Three" },
+        { q: "מה זה Sun?", options: ["ירח", "שמש", "כוכב"], a: "שמש" },
+        { q: "איזו אות באה אחרי A?", options: ["B", "C", "D"], a: "B" },
+        { q: "איך אומרים 'מים'?", options: ["Food", "Water", "Milk"], a: "Water" },
+        { q: "מה זה Dad?", options: ["אמא", "אבא", "אח"], a: "אבא" },
+        { q: "האות הקטנה של K היא:", options: ["k", "l", "h"], a: "k" }
       ]
     },
     general: {
-      lesson: { title: "האחוזון העליון", text: "שאלות מעניינות על חיות, צבעים והעולם שלנו!", example: "כחול + צהוב = ירוק" },
-      questions: [
-        { q: "איזו מדינה נראית כמו צורה של מגף?", options: ["איטליה", "ישראל", "אמריקה"], a: "איטליה" },
-        { q: "כמה שחקנים יש בכל קבוצה על המגרש בכדורגל?", options: ["7", "11", "10"], a: "11" },
-        { q: "איזה צבע מקבלים אם מערבבים כחול וצהוב?", options: ["כתום", "ירוק", "אדום"], a: "ירוק" },
-        { q: "באיזו יבשת אנחנו חיים (ישראל)?", options: ["אירופה", "אסיה", "אפריקה"], a: "אסיה" },
-        { q: "מי החיה הכי גדולה בעולם?", options: ["פיל", "אריה", "לווייתן כחול"], a: "לווייתן כחול" },
-        { q: "כמה חודשים יש בשנה?", options: ["10", "12", "13"], a: "12" },
+      lvl1: [
+        { q: "מתי יום ההולדת של אלין דון?", options: ["17 לדצמבר", "25 לספטמבר", "1 בינואר"], a: "17 לדצמבר" },
+        { q: "איזו מדינה נראית כמו מגף?", options: ["איטליה", "ישראל", "צרפת"], a: "איטליה" },
+        { q: "מי החיה הכי גדולה בעולם?", options: ["פיל", "לווייתן כחול", "אריה"], a: "לווייתן כחול" },
+        { q: "באיזו יבשת נמצאת ישראל?", options: ["אירופה", "אסיה", "אפריקה"], a: "אסיה" },
+        { q: "מה שוקל יותר: קילו נוצות או קילו ברזל?", options: ["ברזל", "נוצות", "אותו דבר"], a: "אותו דבר" },
+        { q: "כמה חודשים יש בשנה?", options: ["10", "12", "14"], a: "12" },
+        { q: "מה הצבע של השמש?", options: ["אדום", "צהוב", "כחול"], a: "צהוב" },
         { q: "כמה צלעות יש למשולש?", options: ["3", "4", "5"], a: "3" },
-        { q: "מה שוקל יותר: קילו נוצות או קילו ברזל?", options: ["ברזל", "נוצות", "שניהם אותו דבר"], a: "שניהם אותו דבר" },
-        { q: "מתי יום ההולדת שלך, אלין?", options: ["17 לדצמבר", "25 לספטמבר", "1 בינואר"], a: "17 לדצמבר" },
-        { q: "מתי יום ההולדת של אחיך אילעי?", options: ["17 לדצמבר", "25 לספטמבר", "1 באוגוסט"], a: "25 לספטמבר" }
+        { q: "איך קוראים לכוכב עליו אנחנו חיים?", options: ["מאדים", "כדור הארץ", "צדק"], a: "כדור הארץ" },
+        { q: "איזה פרי קוף הכי אוהב?", options: ["תפוח", "בננה", "תות"], a: "בננה" },
+        { q: "כמה ימים יש בשבוע?", options: ["5", "7", "10"], a: "7" },
+        { q: "מה יוצא מהר געש?", options: ["מים", "לבה", "שלג"], a: "לבה" },
+        { q: "מי מלך החיות?", options: ["נמר", "אריה", "דוב"], a: "אריה" },
+        { q: "מהו הצבע של הדשא?", options: ["ירוק", "צהוב", "חום"], a: "ירוק" },
+        { q: "כמה אצבעות יש ביד אחת?", options: ["4", "5", "6"], a: "5" },
+        { q: "איך אומרים 'תודה' באנגלית?", options: ["Please", "Thank you", "Sorry"], a: "Thank you" },
+        { q: "איפה נמצא הלב?", options: ["בצד שמאל", "בצד ימין", "ברגל"], a: "בצד שמאל" },
+        { q: "איזה פרי הוא אדום ומתוק?", options: ["לימון", "תות", "מלפפון"], a: "תות" },
+        { q: "מה שותים פרה?", options: ["חלב", "מים", "מיץ"], a: "מים" },
+        { q: "איזו חיה אומרת 'מייאו'?", options: ["כלב", "חתול", "אריה"], a: "חתול" }
       ]
     }
   }
@@ -84,56 +158,65 @@ const content: any = {
 
 export default function Game() {
   const [player, setPlayer] = useState<any>(null);
-  const [subject, setSubject] = useState<'math' | 'english' | 'general' | null>(null);
-  const [mode, setMode] = useState<'lesson' | 'quiz' | 'finish'>('lesson');
+  const [subject, setSubject] = useState<string | null>(null);
+  const [level, setLevel] = useState<1 | 2>(1);
+  const [mode, setMode] = useState<'menu' | 'quiz' | 'review' | 'finish'>('menu');
   const [currentIdx, setCurrentIdx] = useState(0);
   const [score, setScore] = useState(0);
-  const [mistakes, setMistakes] = useState(0);
+  const [mistakes, setMistakes] = useState<any[]>([]);
   const [msg, setMsg] = useState("");
-  const [shuffledQuestions, setShuffledQuestions] = useState<any[]>([]);
+  const [activeQuestions, setActiveQuestions] = useState<any[]>([]);
 
-  useEffect(() => {
-    if (player && subject) {
-      const q = [...content[player][subject].questions].sort(() => Math.random() - 0.5);
-      setShuffledQuestions(q);
-      setCurrentIdx(0);
-      setScore(0);
-      setMistakes(0);
-      setMode('lesson');
-    }
-  }, [player, subject]);
+  // התחלת משחק
+  const startQuiz = (sub: string, lvl: 1 | 2) => {
+    setSubject(sub);
+    setLevel(lvl);
+    const qList = content[player][sub][`lvl${lvl}`] || [];
+    setActiveQuestions(qList.sort(() => Math.random() - 0.5));
+    setCurrentIdx(0);
+    setScore(0);
+    setMistakes([]);
+    setMode('quiz');
+  };
 
-  const handleAnswer = (opt: any) => {
-    if (msg || mode !== 'quiz') return;
-    const correct = opt === shuffledQuestions[currentIdx].a;
+  const handleAnswer = (opt: string) => {
+    if (msg) return;
+    const currentQ = activeQuestions[currentIdx];
+    const isCorrect = opt === currentQ.a;
 
-    if (correct) {
-      setScore(s => s + 10);
-      setMsg("⭐ נכון! +10 נקודות ⭐");
+    if (isCorrect) {
+      setScore(s => s + 5); // 5 נקודות לכל שאלה מתוך 20 = 100
+      setMsg("✅ נכון!");
     } else {
-      setScore(s => Math.max(0, s - 5));
-      setMistakes(m => m + 1);
-      setMsg("❌ טעות... -5 נקודות");
+      setMistakes(prev => [...prev, currentQ]);
+      setMsg("❌ לא נורא...");
     }
 
     setTimeout(() => {
       setMsg("");
-      if (currentIdx + 1 < shuffledQuestions.length) {
+      if (currentIdx + 1 < activeQuestions.length) {
         setCurrentIdx(prev => prev + 1);
       } else {
         setMode('finish');
       }
-    }, 1200);
+    }, 1000);
+  };
+
+  const startReview = () => {
+    setActiveQuestions(mistakes);
+    setMistakes([]);
+    setCurrentIdx(0);
+    setMode('quiz');
   };
 
   if (!player) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 p-6 text-center text-white" dir="rtl">
-        <h1 className="text-6xl font-black mb-16 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">האחוזון העליון</h1>
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-white" dir="rtl">
+        <h1 className="text-6xl font-black mb-16 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-pulse">האחוזון העליון</h1>
         <div className="flex gap-10">
           {['ilai', 'alin'].map(p => (
             <button key={p} onClick={() => setPlayer(p)} className="group flex flex-col items-center gap-4">
-              <div className="w-44 h-44 rounded-[2rem] overflow-hidden border-4 border-white/20 group-hover:border-blue-500 shadow-2xl transition-all">
+              <div className="w-44 h-44 rounded-[2rem] overflow-hidden border-4 border-white/10 group-hover:border-blue-500 shadow-2xl transition-all">
                 <img src={`/${p}.jpg`} alt="" className="w-full h-full object-cover" />
               </div>
               <span className="text-3xl font-bold">{content[p].name}</span>
@@ -144,70 +227,65 @@ export default function Game() {
     );
   }
 
-  if (!subject) {
+  if (mode === 'menu') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 p-6 text-center text-white" dir="rtl">
-        <h2 className="text-4xl font-black mb-12">שלום {content[player].name}, במה נתחרה?</h2>
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 text-center text-white" dir="rtl">
+        <h2 className="text-4xl font-black mb-12">שלום {content[player].name}, בחר מקצוע:</h2>
         <div className="grid gap-6 w-full max-w-md">
-          <button onClick={() => setSubject('math')} className="p-8 bg-orange-500 rounded-3xl text-2xl font-black shadow-[0_10px_0_rgb(194,65,12)] active:translate-y-1 active:shadow-none transition-all">🔢 חשבון</button>
-          <button onClick={() => setSubject('english')} className="p-8 bg-blue-500 rounded-3xl text-2xl font-black shadow-[0_10px_0_rgb(29,78,216)] active:translate-y-1 active:shadow-none transition-all">🔤 אנגלית</button>
-          <button onClick={() => setSubject('general')} className="p-8 bg-yellow-500 text-slate-900 rounded-3xl text-2xl font-black shadow-[0_10px_0_rgb(161,98,7)] active:translate-y-1 active:shadow-none transition-all">🏆 טריוויה</button>
+          {['math', 'english', 'general'].map(sub => (
+            <button key={sub} onClick={() => startQuiz(sub, 1)} className="p-8 bg-slate-800 rounded-3xl border-2 border-white/5 hover:border-blue-500 text-2xl font-bold transition-all">
+              {sub === 'math' ? '🔢 חשבון' : sub === 'english' ? '🔤 אנגלית' : '🌍 טריוויה'}
+            </button>
+          ))}
         </div>
+        <button onClick={() => setPlayer(null)} className="mt-12 text-slate-500 underline">החלפת משתמש</button>
       </div>
     );
   }
 
   if (mode === 'finish') {
+    const passed = score >= 70;
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center text-white" dir="rtl">
-        <h2 className="text-7xl font-black mb-6 text-yellow-400 animate-bounce">סיום!</h2>
-        <div className="bg-slate-900 p-12 rounded-[3rem] border-4 border-yellow-400/50 shadow-[0_0_50px_rgba(250,204,21,0.2)]">
-          <div className="text-2xl mb-2 text-slate-400 uppercase tracking-widest font-bold">הניקוד שלך</div>
-          <div className="text-9xl font-black mb-8 text-white">{score}</div>
-          <p className="text-2xl text-blue-400 font-bold italic">הצלחת להיכנס לאחוזון העליון!</p>
-          <div className="mt-8 bg-slate-800 p-4 rounded-2xl text-right">
-             <p className="text-slate-400">דוח לאבא: {mistakes} טעויות בסיבוב הזה.</p>
-          </div>
-        </div>
-        <button onClick={() => setSubject(null)} className="mt-12 bg-white text-slate-950 px-12 py-5 rounded-2xl text-2xl font-black">סיבוב נוסף 🔄</button>
-      </div>
-    );
-  }
-
-  if (mode === 'lesson') {
-    const lesson = content[player][subject].lesson;
-    return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 text-center text-white" dir="rtl">
-        <div className="bg-slate-800 w-full max-w-2xl p-12 rounded-[4rem] border-t-8 border-blue-500 shadow-2xl">
-          <h2 className="text-5xl font-black mb-8">{lesson.title} 🎓</h2>
-          <p className="text-2xl mb-12 text-slate-300 leading-relaxed">{lesson.text}</p>
-          <div className="bg-slate-950 p-8 rounded-3xl mb-12 border-2 border-white/10 text-4xl font-black text-blue-400 italic">
-            {lesson.example}
-          </div>
-          <button onClick={() => setMode('quiz')} className="w-full bg-blue-500 py-6 rounded-2xl text-3xl font-black shadow-[0_10px_0_rgb(29,78,216)] active:translate-y-1 active:shadow-none transition-all">הבנתי, בואו נשחק! 🚀</button>
+        <div className="bg-slate-900 p-12 rounded-[4rem] border-4 border-white/5 shadow-2xl max-w-lg w-full">
+          <h2 className="text-6xl font-black mb-6 text-yellow-400">{score} נקודות</h2>
+          
+          {passed ? (
+            <div>
+              <p className="text-2xl text-green-400 font-bold mb-8">כל הכבוד! עברת את השלב!</p>
+              <button onClick={() => startQuiz(subject!, 2)} className="w-full bg-blue-500 py-6 rounded-2xl font-black text-2xl shadow-lg">עבור לרמה 2 🚀</button>
+            </div>
+          ) : (
+            <div>
+              <p className="text-2xl text-red-400 font-bold mb-4">חסרות לך נקודות כדי לעבור...</p>
+              <p className="text-slate-400 mb-8">בוא נעבור שוב על {mistakes.length} השאלות שטעית בהן!</p>
+              <button onClick={startReview} className="w-full bg-yellow-500 text-slate-900 py-6 rounded-2xl font-black text-2xl">תקן את הטעויות שלי ✍️</button>
+            </div>
+          )}
+          <button onClick={() => setMode('menu')} className="mt-6 w-full bg-slate-800 py-4 rounded-2xl">חזרה לתפריט</button>
         </div>
       </div>
     );
   }
 
-  const q = shuffledQuestions[currentIdx];
+  const q = activeQuestions[currentIdx];
   return (
-    <div className="min-h-screen bg-slate-950 p-6 flex flex-col items-center text-white" dir="rtl">
-      <div className="w-full max-w-2xl bg-slate-900 p-6 rounded-3xl flex justify-between items-center mb-8 border-b-4 border-white/5">
-        <div className="text-3xl font-black text-yellow-400">ניקוד: {score}</div>
-        <div className="text-slate-500 font-bold">שאלה {currentIdx + 1} / {shuffledQuestions.length}</div>
+    <div className="min-h-screen bg-slate-950 p-6 flex flex-col items-center text-white font-sans" dir="rtl">
+      <div className="w-full max-w-2xl flex justify-between items-center mb-8">
+        <div className="text-2xl font-black text-yellow-400">ניקוד: {score}</div>
+        <div className="text-slate-500 font-bold">שאלה {currentIdx + 1} / {activeQuestions.length}</div>
       </div>
-      <div className="bg-slate-900 w-full max-w-2xl rounded-[3.5rem] p-12 text-center relative border-2 border-white/10 shadow-2xl flex flex-col justify-center min-h-[500px]">
+      <div className="bg-slate-900 w-full max-w-2xl rounded-[3.5rem] p-12 text-center relative border-2 border-white/10 shadow-2xl min-h-[500px] flex flex-col justify-center">
         <h2 className="text-4xl md:text-5xl font-black mb-16 leading-tight">{q.q}</h2>
         <div className="grid gap-5">
           {q.options.map((opt: any) => (
-            <button key={opt} onClick={() => handleAnswer(opt)} className="w-full py-6 text-2xl font-bold rounded-2xl bg-slate-800 border-2 border-white/5 hover:border-blue-500 hover:bg-slate-700 transition-all active:scale-95 shadow-lg text-slate-100">
+            <button key={opt} onClick={() => handleAnswer(opt)} className="w-full py-6 text-2xl font-bold rounded-2xl bg-slate-800 border-2 border-white/5 hover:border-blue-500 transition-all active:scale-95">
               {opt}
             </button>
           ))}
         </div>
         {msg && (
-          <div className={`absolute inset-0 flex items-center justify-center text-5xl font-black bg-slate-950/95 rounded-[3.5rem] animate-pulse ${msg.includes('✅') || msg.includes('⭐') ? 'text-green-400' : 'text-red-400'}`}>
+          <div className={`absolute inset-0 flex items-center justify-center text-6xl font-black bg-slate-950/90 rounded-[3.5rem] animate-in zoom-in ${msg.includes('✅') ? 'text-green-500' : 'text-red-500'}`}>
             {msg}
           </div>
         )}
